@@ -112,7 +112,7 @@ open class CommonItemViewHolder<T>(itemView: View, binding: HomeCommonItemBindin
                                         )
                                         Toast.makeText(
                                             context,
-                                            "Copied verifiedBootHash to clipboard!",
+                                            context.getString(R.string.copied_verifiedBootHash_to_clipboard),
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
