@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Атестація ключів</string>
+    <string name="secret_mode">Режим прихованості</string>
+    <string name="use_shizuku">Використовувати Shizuku</string>
+    <string name="use_sak">Використовувати атестацію Knox</string>
+    <string name="use_strongbox">Використовувати StrongBox</string>
+    <string name="use_attest_key">Використовувати ключ атестації</string>
+    <string name="import_attest_key">Імпортувати ключ атестації</string>
+    <string name="attest_device_props">Атестувати властивості пристрою</string>
+    <string name="id_type_serial">Атестувати серійний номер пристрою</string>
+    <string name="id_type_imei">Атестувати IMEI</string>
+    <string name="id_type_meid">Атестувати MEID</string>
+    <string name="include_unique_id">Включити унікальний ID</string>
+    <string name="rkp_test">Тест RKP</string>
+    <string name="reset">Скинути</string>
+    <string name="load_certs">Завантажити з файлу</string>
+    <string name="save_certs">Зберегти у файл</string>
+    <string name="about">Про додаток</string>
+    <string name="open_source_info">Це програмне забезпечення є відкритим вихідним кодом під ліцензією %2$s (%1$s).</string>
+    <string name="install_shizuku">Встановіть Shizuku, щоб використовувати атестацію ID (%s).</string>
+    <string name="start_shizuku">Shizuku не запущено.</string>
+
+    <string name="bootloader_locked">Завантажувач заблоковано</string>
+    <string name="bootloader_user">Корінь довіри встановлено користувачем</string>
+    <string name="bootloader_unlocked">Завантажувач розблоковано</string>
+    <string name="bootloader_unknown">Статус завантажувача невідомий</string>
+    <string name="bootloader_summary_sw_level">Цей пристрій не підтримує атестацію ключів на апаратному рівні.</string>
+    <string name="cert_chain_not_trusted">Ланцюжок сертифікатів не є довіреним</string>
+    <string name="cert_chain_not_trusted_summary">Сертифікат було відкликано або перевірка підпису в ланцюжку сертифікатів не вдалася.</string>
+    <string name="unknown_root_cert">Невідомий кореневий сертифікат</string>
+    <string name="unknown_root_cert_summary">Кореневий сертифікат не є відомим довіреним центром сертифікації.</string>
+    <string name="aosp_root_cert">Кореневий сертифікат програмної атестації AOSP</string>
+    <string name="aosp_root_cert_summary">Приватний ключ кореневого сертифіката AOSP загальновідомий, тому ланцюжок сертифікатів може бути підроблений.</string>
+    <string name="google_root_cert">Кореневий сертифікат апаратної атестації Google</string>
+    <string name="google_root_cert_summary">Пристрої, сумісні з GMS, можуть використовувати ключ атестації, підписаний Google.</string>
+    <string name="google_root_cert_rkp">Віддалене надання ключів Google</string>
+    <string name="google_root_cert_rkp_summary">Віддалено наданий ключ атестації має вищу безпеку та доступність.</string>
+    <string name="knox_root_cert">Кореневий сертифікат атестації Samsung Knox</string>
+    <string name="knox_root_cert_summary">Атестація Knox підписується за допомогою атестаційного ключа Samsung (SAK).</string>
+    <string name="oem_root_cert">Кореневий сертифікат OEM</string>
+    <string name="oem_root_cert_summary">Цей пристрій довіряє цьому кореневому сертифікату, але інші можуть йому не довіряти.</string>
+
+    <string name="cert_chain">Ланцюжок сертифікатів</string>
+    <string name="cert_chain_description">Ланцюжок сертифікатів — це список сертифікатів, що використовуються для автентифікації ключа. Ланцюжок починається з сертифіката, пов\'язаного з цим ключем, і кожен сертифікат підписаний наступним у ланцюжку. Ланцюжок закінчується кореневим сертифікатом, і довіра до атестації залежить від кореневого сертифіката ланцюжка.</string>
+    <string name="cert_info">Інформація про сертифікат</string>
+    <string name="cert_subject">суб\'єкт: </string>
+    <string name="cert_not_before">дійсний з: </string>
+    <string name="cert_not_after">дійсний до: </string>
+    <string name="cert_error_sign">помилка підпису: </string>
+    <string name="cert_error_revoked">відкликано: </string>
+    <string name="cert_error_expired">термін дії минув: </string>
+    <string name="provisioning_info_certs_issued">кількість виданих сертифікатів за останні 30 днів: </string>
+    <string name="provisioning_info_manufacturer">виробник: </string>
+
+    <string name="error_message_subtitle">Детальні повідомлення:</string>
+    <string name="error_unknown">Невідома помилка</string>
+    <string name="error_unavailable">Неможливо атестувати</string>
+    <string name="error_unavailable_summary">
+    Помилка атестації. Налаштуйте параметри в меню та спробуйте ще раз.
+    Поширеною причиною постійних збоїв атестації є неможливість використовувати наданий виробником ключ атестації,
+    можливо, через неправильну конфігурацію пристрою або пошкоджений розділ persist.
+    </string>
+    <string name="error_cant_parse_cert">Неможливо розібрати сертифікат</string>
+    <string name="error_cant_parse_cert_summary">
+    Формат сертифіката неправильний або містить непідтримувані функції.
+    </string>
+    <string name="error_strongbox_unavailable">StrongBox недоступний</string>
+    <string name="error_strongbox_unavailable_summary">
+    Цей пристрій заявлено як такий, що підтримує StrongBox, але наразі він недоступний.
+    </string>
+    <string name="error_deviceids_unavailable">Неможливо атестувати ідентифікатори пристрою</string>
+    <string name="error_deviceids_unavailable_summary">
+    Цей пристрій заявлено як такий, що підтримує атестацію ID, але ідентифікатори не існують, не збігаються,
+    або пристрій більше не може атестувати свої ідентифікатори. Налаштуйте параметри в меню та спробуйте ще раз.
+    </string>
+    <string name="error_out_of_keys">Немає віддалено наданих ключів для атестації</string>
+    <string name="error_out_of_keys_summary">
+    Цей пристрій не зареєстрований на сервері надання ключів, або сервер остаточно відмовляється видавати ключі.
+    </string>
+    <string name="error_out_of_keys_transient">Наразі немає віддалено наданих ключів для атестації</string>
+    <string name="error_out_of_keys_transient_summary">
+    Пул ключів вичерпано. Спробуйте ще раз після підключення до мережі.
+    Якщо сервер тимчасово відмовляється видавати ключі, перевірте наявність оновлень системи.
+    </string>
+    <string name="error_unavailable_transient">Наразі неможливо атестувати</string>
+    <string name="error_unavailable_transient_summary">
+    Проблема тимчасова. Налаштуйте параметри в меню або спробуйте ще раз пізніше.
+    </string>
+    <string name="error_keys_not_provisioned">Немає ключів атестації</string>
+    <string name="error_keys_not_provisioned_summary">
+    Неможливо отримати віддалено надані ключі атестації, і немає наданих виробником ключів атестації.
+    </string>
+    <string name="error_remote_key_provisioning">Помилка віддаленого надання ключів</string>
+    <string name="error_remote_key_provisioning_summary">
+    Неможливо отримати ключ атестації з сервера надання ключів.
+    </string>
+
+    <string name="rpc_hardware_info">Інформація про апаратне забезпечення</string>
+    <string name="rpc_hardware_info_description">
+    Інформація про апаратне забезпечення віддалено наданого компонента.
+    </string>
+    <string name="rpc_version_number">Версія</string>
+    <string name="rpc_version_number_description">
+    Версія реалізації апаратного забезпечення віддалено наданого компонента.
+    Надана тут версія повинна відповідати версії, зазначеній у CsrPayload, створеному інтерфейсом HAL.
+    </string>
+    <string name="rpc_author_name">Постачальник</string>
+    <string name="rpc_author_name_description">
+    Назва організації-автора реалізації IRemotelyProvisionedComponent.
+    </string>
+    <string name="rpc_unique_id">Ідентифікатор</string>
+    <string name="rpc_unique_id_description">
+    Непрозорий ідентифікатор для цієї реалізації IRemotelyProvisionedComponent.
+    Кожна реалізація повинна мати відмінний ідентифікатор від усіх інших реалізацій, і він має бути узгодженим на всіх пристроях.
+    </string>
+    <string name="rkp_device_info">Інформація про пристрій</string>
+    <string name="rkp_device_info_description">
+    Інформація про пристрій містить дані про пристрій, підписані IRemotelyProvisionedComponent HAL.
+    Ці значення призначені для перевірки сервером, щоб переконатися, що запит на підпис сертифіката,
+    створений екземпляром IRemotelyProvisionedComponent HAL, надходить від очікуваного пристрою
+    на основі значень, спочатку завантажених під час виготовлення пристрою на заводі.
+    </string>
+    <string name="rkp_hostname">Ім\'я хоста віддаленого надання</string>
+    <string name="rkp_hostname_empty">Віддалене надання ключів вимкнено</string>
+
+    <string name="attestation">Атестація</string>
+    <string name="attestation_version_description"><![CDATA[<font face="sans-serif-medium">Версія:</font><br>Версія функції атестації ключів.]]></string>
+    <string name="keymaster" translatable="false">Keymaster / KeyMint</string>
+    <string name="keymaster_version_description"><![CDATA[<font face="sans-serif-medium">Версія:</font><br>Версія рівня апаратної абстракції (HAL) Keymaster або KeyMint.]]></string>
+    <string name="security_level_description"><![CDATA[<font face="sans-serif-medium">Рівень безпеки:</font><br>Ця структура даних вказує на ступінь захисту програмної функції, такої як пара ключів, залежно від її розташування на пристрої.<p><ul><li gap="8sp"><font face="sans-serif-medium">Програмне забезпечення</font><br>Логіка створення та керування функцією реалізована в системі Android. Для цілей створення та зберігання пар ключів це розташування є менш безпечним, ніж TEE, але більш безпечним, ніж простір процесів вашого додатка.</li><li gap="8sp"><font face="sans-serif-medium">Довірене середовище</font><br>Логіка створення та керування функцією реалізована в захищеному апаратному забезпеченні, такому як TEE. Для цілей створення та зберігання пар ключів це розташування є більш безпечним, оскільки захищене апаратне забезпечення є дуже стійким до віддаленого злому.</li><li gap="8sp"><font face="sans-serif-medium">StrongBox</font><br>Логіка створення та керування функцією реалізована у спеціальному <a href="https://developer.android.com/training/articles/keystore#HardwareSecurityModule">апаратному модулі безпеки</a>. Для цілей створення та зберігання пар ключів це розташування є більш безпечним, оскільки воно дуже стійке до віддаленого злому та апаратних атак на модуль.</li></ul>]]></string>
+    <string name="attestation_summary_format">Версія: %1$s\nРівень безпеки: %2$s</string>
+    <string name="attestation_challenge">Виклик атестації</string>
+    <string name="attestation_challenge_description">Містить виклик, який був наданий під час створення ключа. Перевірте, чи це значення відповідає значенню, наданому вашим сервером. В іншому випадку ваша служба може бути вразливою до повторного використання старих сертифікатів атестації.</string>
+    <string name="unique_id">Унікальний ID</string>
+    <string name="unique_id_description"><![CDATA[Це значення ідентифікує пристрій, але лише на обмежений період часу. Воно <a href="https://source.android.com/security/keystore/attestation#unique-id">обчислюється</a> і використовується лише системними додатками. У всіх інших додатках uniqueId порожній.]]></string>
+
+    <string name="empty">(порожньо)</string>
+    <string name="security_level_software">Програмний</string>
+    <string name="security_level_trusted_environment">Довірене середовище</string>
+    <string name="security_level_strongbox">StrongBox</string>
+
+    <string name="sw_enforced" translatable="false">ПЗ</string>
+    <string name="sw_enforced_description"><![CDATA[Цей елемент застосовується системою Android, а не апаратним забезпеченням пристрою.]]></string>
+    <string name="tee_enforced" translatable="false">АП</string>
+    <string name="tee_enforced_description"><![CDATA[Цей елемент застосовується апаратною частиною пристрою.]]></string>
+
+    <string name="authorization_list">Список авторизації</string>
+    <string name="authorization_list_purpose">Призначення</string>
+    <string name="authorization_list_algorithm">Алгоритм</string>
+    <string name="authorization_list_keySize">Розмір ключа</string>
+    <string name="authorization_list_digest">Хеші (Digests)</string>
+    <string name="authorization_list_padding">Заповнення (Padding)</string>
+    <string name="authorization_list_ecCurve">Крива EC</string>
+    <string name="authorization_list_rsaPublicExponent">Публічний експонент RSA</string>
+    <string name="authorization_list_rollbackResistance">Стійкість до відкату</string>
+    <string name="authorization_list_activeDateTime">Час початку дії</string>
+    <string name="authorization_list_originationExpireDateTime">Час закінчення дії для створення</string>
+    <string name="authorization_list_usageExpireDateTime">Час закінчення дії для використання</string>
+    <string name="authorization_list_noAuthRequired">Автентифікація не потрібна</string>
+    <string name="authorization_list_userAuthType">Тип автентифікації користувача</string>
+    <string name="authorization_list_authTimeout">Тайм-аут автентифікації</string>
+    <string name="authorization_list_allowWhileOnBody">Дозволити, поки на тілі</string>
+    <string name="authorization_list_trustedUserPresenceRequired">Потрібна довірена присутність користувача</string>
+    <string name="authorization_list_trustedConfirmationRequired">Потрібне довірене підтвердження</string>
+    <string name="authorization_list_unlockedDeviceRequired">Потрібен розблокований пристрій</string>
+    <string name="authorization_list_allApplications">Усі додатки</string>
+    <string name="authorization_list_applicationId">ID додатка</string>
+    <string name="authorization_list_creationDateTime">Час створення</string>
+    <string name="authorization_list_origin">Походження</string>
+    <string name="authorization_list_rollbackResistant">Стійкий до відкату</string>
+    <string name="authorization_list_rootOfTrust">Корінь довіри</string>
+    <string name="copied_verifiedBootHash_to_clipboard">Скопійовано verifiedBootHash до буфера обміну!</string>
+    <string name="authorization_list_osVersion">Версія ОС</string>
+    <string name="authorization_list_osPatchLevel">Рівень патча ОС</string>
+    <string name="authorization_list_attestationApplicationId">ID додатка атестації</string>
+    <string name="authorization_list_attestationIdBrand">бренд</string>
+    <string name="authorization_list_attestationIdDevice">пристрій</string>
+    <string name="authorization_list_attestationIdProduct">продукт</string>
+    <string name="authorization_list_attestationIdSerial">серійний номер</string>
+    <string name="authorization_list_attestationIdImei">IMEI</string>
+    <string name="authorization_list_attestationIdSecondImei">другий IMEI</string>
+    <string name="authorization_list_attestationIdMeid">MEID</string>
+    <string name="authorization_list_attestationIdManufacturer">виробник</string>
+    <string name="authorization_list_attestationIdModel">модель</string>
+    <string name="authorization_list_vendorPatchLevel">Рівень патча постачальника</string>
+    <string name="authorization_list_bootPatchLevel">Рівень патча завантаження</string>
+    <string name="authorization_list_mgfDigest">Дайджест Rsa Oaep Mgf</string>
+    <string name="authorization_list_earlyBootOnly">Тільки раннє завантаження</string>
+    <string name="authorization_list_usageCountLimit">Ліміт використання</string>
+    <string name="authorization_list_deviceUniqueAttestation">Унікальна атестація пристрою</string>
+    <string name="authorization_list_identityCredentialKey">Ключ облікових даних ідентичності</string>
+    <string name="authorization_list_moduleHash">Хеш модуля</string>
+
+    <string name="authorization_list_description"><![CDATA[
+    Ця структура даних містить властивості самої пари ключів, як визначено в рівні апаратної абстракції (HAL) Keymaster або KeyMint. Ви порівнюєте ці значення з поточним станом пристрою або з набором очікуваних значень, щоб перевірити, чи пара ключів все ще дійсна для використання у вашому додатку.
+    ]]></string>
+    <string name="authorization_list_purpose_description"><![CDATA[
+    Визначає набір призначень, для яких може використовуватися ключ.
+    ]]></string>
+    <string name="authorization_list_algorithm_description"><![CDATA[
+    Визначає криптографічний алгоритм, з яким використовується ключ. В об\'єкті AuthorizationList атестації значення алгоритму завжди RSA або EC.
+    ]]></string>
+    <string name="authorization_list_keySize_description"><![CDATA[
+    Визначає розмір ключа в бітах, виміряний звичайним способом для алгоритму ключа.
+    ]]></string>
+    <string name="authorization_list_digest_description"><![CDATA[
+    Визначає алгоритми хешів (дайджестів), які можуть використовуватися з ключем для виконання операцій підпису та перевірки. Цей тег стосується ключів RSA, ECDSA та HMAC.
+    ]]></string>
+    <string name="authorization_list_padding_description"><![CDATA[
+    Визначає режими заповнення (padding), які можуть використовуватися з ключем. Цей тег стосується ключів RSA та AES.
+    ]]></string>
+    <string name="authorization_list_ecCurve_description"><![CDATA[
+    Набір параметрів, що використовуються для генерації пари ключів еліптичної кривої (EC), яка використовує ECDSA для підпису та перевірки в системному сховищі ключів Android.
+    ]]></string>
+    <string name="authorization_list_rsaPublicExponent_description"><![CDATA[
+    Визначає значення публічного експонента для пари ключів RSA. Цей тег стосується лише ключів RSA і є необхідним для всіх ключів RSA.
+    ]]></string>
+    <string name="authorization_list_rollbackResistance_description"><![CDATA[
+    Вказує, що ключ є стійким до відкату, що означає, що при видаленні за допомогою deleteKey або deleteAllKeys, ключ гарантовано буде остаточно видалено і стане непридатним для використання. Можливо, ключі без цього тегу можуть бути видалені, а потім відновлені з резервної копії.
+    ]]></string>
+    <string name="authorization_list_activeDateTime_description"><![CDATA[
+    Визначає дату та час, коли ключ стає активним.
+    ]]></string>
+    <string name="authorization_list_originationExpireDateTime_description"><![CDATA[
+    Визначає дату та час, коли закінчується термін дії ключа для цілей підпису та шифрування.
+    ]]></string>
+    <string name="authorization_list_usageExpireDateTime_description"><![CDATA[
+    Визначає дату та час, коли закінчується термін дії ключа для цілей перевірки та дешифрування.
+    ]]></string>
+    <string name="authorization_list_noAuthRequired_description"><![CDATA[
+    Вказує, що для використання цього ключа не потрібна автентифікація.
+    ]]></string>
+    <string name="authorization_list_userAuthType_description"><![CDATA[
+    Визначає типи автентифікаторів користувача, які можуть використовуватися для авторизації цього ключа.
+    ]]></string>
+    <string name="authorization_list_authTimeout_description"><![CDATA[
+    Визначає час у секундах, протягом якого ключ авторизований для використання після автентифікації.
+    ]]></string>
+    <string name="authorization_list_allowWhileOnBody_description"><![CDATA[
+    Дозволяє використовувати ключ після закінчення його тайм-ауту автентифікації, якщо користувач все ще носить пристрій на своєму тілі. Зверніть увагу, що безпечний датчик на тілі визначає, чи носить користувач пристрій на своєму тілі.
+    ]]></string>
+    <string name="authorization_list_trustedUserPresenceRequired_description"><![CDATA[
+    Вказує, що цей ключ можна використовувати, лише якщо користувач надав доказ фізичної присутності.
+    ]]></string>
+    <string name="authorization_list_trustedConfirmationRequired_description"><![CDATA[
+    Вказує, що ключ можна використовувати, лише якщо користувач надає підтвердження даних для підпису за допомогою токена схвалення.
+    ]]></string>
+    <string name="authorization_list_unlockedDeviceRequired_description"><![CDATA[
+    Вимагати, щоб екран пристрою був розблокований, якщо використовується ключ.
+    ]]></string>
+    <string name="authorization_list_allApplications_description"><![CDATA[
+    Вказує, чи всі додатки на пристрої можуть отримати доступ до пари ключів.
+    ]]></string>
+    <string name="authorization_list_applicationId_description"><![CDATA[
+    При наданні generateKey або importKey цей тег визначає дані, необхідні під час усіх використань ключа.
+    ]]></string>
+    <string name="authorization_list_creationDateTime_description"><![CDATA[
+    Визначає дату та час створення ключа в мілісекундах з 1 січня 1970 року. Цей тег є необов\'язковим і лише інформаційним.
+    ]]></string>
+    <string name="authorization_list_origin_description"><![CDATA[
+    Визначає, де був створений ключ, якщо це відомо. Цей тег не може бути вказаний під час генерації або імпорту ключа, і повинен бути доданий до характеристик ключа довіреним додатком (trustlet).
+    ]]></string>
+    <string name="authorization_list_rollbackResistant_description"><![CDATA[
+    Вказує, що ключ є стійким до відкату, що означає, що при видаленні за допомогою deleteKey або deleteAllKeys, ключ гарантовано буде остаточно видалено і стане непридатним для використання. Можливо, ключі без цього тегу можуть бути видалені, а потім відновлені з резервної копії.
+    ]]></string>
+    <string name="authorization_list_rootOfTrust_description"><![CDATA[
+    Ця колекція значень визначає ключову інформацію про стан пристрою.<br/><p>
+    verifiedBootKey: <br/>Безпечний хеш ключа, який перевіряє образ системи.<br/><br/>
+    deviceLocked: <br/>True, якщо завантажувач пристрою заблоковано, що вмикає перевірку Verified Boot і запобігає прошивці непідписаного образу пристрою.<br/><br/>
+    verifiedBootState: <br/>Ця структура даних надає поточний стан завантаження пристрою, що представляє рівень захисту, наданий користувачеві та додаткам після завершення завантаження пристрою.<br/><br/>
+    verifiedBootHash: <br/>Дайджест усіх даних, захищених Verified Boot. Для пристроїв, що використовують реалізацію Android Verified Boot, це значення містить дайджест структури VBMeta, або структури метаданих Verified Boot.
+    </p>]]></string>
+    <string name="authorization_list_osVersion_description"><![CDATA[
+    Версія операційної системи Android, пов\'язана з Keymaster, вказана як шестизначне ціле число. Наприклад, версія 8.1.0 представлена як 080100.
+    ]]></string>
+    <string name="authorization_list_osPatchLevel_description"><![CDATA[
+    Місяць і рік, пов\'язані з патчем безпеки, що використовується в Keymaster, вказані як шестизначне ціле число. Наприклад, патч за серпень 2018 року представлений як 201808.
+    ]]></string>
+    <string name="authorization_list_attestationApplicationId_description"><![CDATA[
+    Ця структура даних відображає переконання платформи Android щодо того, яким додаткам дозволено використовувати секретний матеріал ключа під атестацією. ID може складатися з декількох пакетів, якщо і тільки якщо кілька пакетів мають однаковий UID.
+    ]]></string>
+    <string name="authorization_list_attestationIdBrand_description"><![CDATA[
+    Надає назву бренду пристрою, як повертає Build.BRAND в Android. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdDevice_description"><![CDATA[
+    Надає назву пристрою, як повертає Build.DEVICE в Android. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdProduct_description"><![CDATA[
+    Надає назву продукту пристрою, як повертає Build.PRODUCT в Android. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdSerial_description"><![CDATA[
+    Надає серійний номер пристрою. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdImei_description"><![CDATA[
+    Надає IMEI одного з радіомодулів на пристрої для операцій генерації/імпорту атестованого ключа. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdSecondImei_description"><![CDATA[
+    Надає додатковий IMEI одного з радіомодулів на пристрої для операцій генерації/імпорту атестованого ключа. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdMeid_description"><![CDATA[
+    Надає MEID для всіх радіомодулів на пристрої. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdManufacturer_description"><![CDATA[
+    Надає назву виробника пристрою, як повертає Build.MANUFACTURER в Android. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_attestationIdModel_description"><![CDATA[
+    Надає назву моделі пристрою, як повертає Build.MODEL в Android. Це поле встановлюється лише при запиті атестації ідентифікаторів пристрою.
+    ]]></string>
+    <string name="authorization_list_vendorPatchLevel_description"><![CDATA[
+    Визначає рівень патча безпеки образу постачальника, який має бути встановлений на пристрої для використання цього ключа. Значення подається у форматі РРРРММДД, що представляє дату патча безпеки постачальника. Наприклад, якби ключ був згенерований на пристрої Android з встановленим патчем безпеки постачальника від 1 серпня 2018 року, це значення було б 20180801.
+    ]]></string>
+    <string name="authorization_list_bootPatchLevel_description"><![CDATA[
+    Визначає рівень патча безпеки образу ядра, який має бути встановлений на пристрої для використання цього ключа. Значення подається у форматі РРРРММДД, що представляє дату патча безпеки системи. Наприклад, якби ключ був згенерований на пристрої Android з встановленим системним патчем безпеки від 5 серпня 2018 року, це значення було б 20180805.
+    ]]></string>
+    <string name="authorization_list_mgfDigest_description"><![CDATA[
+    Визначає алгоритми дайджесту MGF1, які можуть використовуватися з шифруванням/дешифруванням RSA з доповненням OAEP. Можливі значення визначені переліком Digest.
+    ]]></string>
+    <string name="authorization_list_earlyBootOnly_description"><![CDATA[
+    Ключі, позначені як EARLY_BOOT_ONLY, можуть використовуватися лише під час раннього завантаження, доки не буде викликано IKeyMintDevice::earlyBootEnded().
+    ]]></string>
+    <string name="authorization_list_usageCountLimit_description"><![CDATA[
+    Визначає кількість разів, коли ключ може бути використаний. Це може бути використано для обмеження використання ключа. Значення є 32-бітним цілим числом, що представляє поточну кількість спроб, що залишилися.
+    ]]></string>
+    <string name="authorization_list_deviceUniqueAttestation_description"><![CDATA[
+    Вказує, що запитується атестація з використанням унікального для пристрою ключа, а не пакетного ключа. Коли використовується унікальний для пристрою ключ, повернутий ланцюжок повинен містити два або три сертифікати.
+    ]]></string>
+    <string name="authorization_list_identityCredentialKey_description"><![CDATA[
+    Використовується в атестаціях, створених IIdentityCredential HAL, коли цей HAL атестує ключі облікових даних. IIdentityCredential створює атестації в стилі KeyMint.
+    ]]></string>
+    <string name="authorization_list_moduleHash_description"><![CDATA[
+    Визначає хеш SHA-256 інформації про модуль у кодуванні DER.
+    ]]></string>
+
+    <string name="knox">Атестація Samsung Knox</string>
+    <string name="knox_description"><![CDATA[
+    Атестація Samsung Knox — це функція, яка перевіряє цілісність даних пристрою Samsung, перевіряючи, чи пристрій не рутовано або не працює на неофіційній прошивці.
+    ]]></string>
+    <string name="knox_challenge">@string/attestation_challenge</string>
+    <string name="knox_challenge_description">@string/attestation_challenge_description</string>
+    <string name="knox_id_attest">Атестація ID</string>
+    <string name="knox_id_attest_description"><![CDATA[
+    Перевіряє, чи були змінені IMEI та серійний номер.
+    ]]></string>
+    <string name="knox_integrity">Статус цілісності</string>
+    <string name="knox_integrity_description"><![CDATA[
+    Довірений додаток Keymaster (TA) у Secure World збирає ці дані:
+    <ul>
+    <li gap="8sp">Назва пакета, код версії та ключ розробника додатку, що запитує.</li>
+    <li gap="8sp">Підписана інформація про поточний стан пристрою та очікуване середовище.</li>
+    <li gap="8sp">Показання апаратного запобіжника, що вказують, чи була коли-небудь завантажена на пристрій недовірена прошивка.</li>
+    </ul>
+    ]]></string>
+    <string name="knox_record_hash">Хеш запису атестації</string>
+    <string name="knox_record_hash_description"><![CDATA[
+    Дайджест SHA256 довіреного додатку (TA), що запитує дані про статус цілісності від ICCC.
+    ]]></string>
+</resources>
