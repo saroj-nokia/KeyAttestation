@@ -25,6 +25,9 @@ if (local.exists()) {
     properties.load(local.newDataInputStream())
 }
 
+def localesFile = file("locales.txt")
+def supportedLocales = localesFile.readLines().findAll { it && !it.startsWith("#") }
+
 android {
     compileSdk = 35
     buildToolsVersion = '35.0.1'
@@ -34,7 +37,7 @@ android {
         targetSdk = 35
         versionCode = gitCommitCount
         versionName = '1.8.4'
-        resourceConfigurations += ['en', 'zh-rCN', 'zh-rTW', 'pt-rBR', 'el', 'uk-rUA']
+        resourceConfigurations += supportedLocales
         optimization {
             keepRules {
                 ignoreFromAllExternalDependencies true
