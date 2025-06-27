@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="menu_language">語言</string>
+    <string name="secret_mode">秘密模式</string>
     <string name="use_shizuku">使用 Shizuku</string>
     <string name="use_sak">使用 Knox 認證</string>
     <string name="use_strongbox">使用硬體安全性模組</string>

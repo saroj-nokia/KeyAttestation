@@ -37,13 +37,8 @@ object LocaleManager {
     }
 
     fun setLocale(languageCode: String) {
-        val localeList = if (languageCode.contains("-")) {
-            val parts = languageCode.split("-")
-            LocaleListCompat.create(Locale(parts[0], parts[1]))
-        } else {
-            LocaleListCompat.create(Locale(languageCode))
-        }
-        AppCompatDelegate.setApplicationLocales(localeList)
+        val locale = Locale.forLanguageTag(languageCode)
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
     }
 
     fun saveLocale(context: Context, languageCode: String) {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="menu_language">Idioma</string>
+    <string name="secret_mode">Modo Secreto</string>
     <string name="use_shizuku">Usar Shizuku</string>
     <string name="use_sak">Usar o atestado Knox</string>
     <string name="use_strongbox">Usar StrongBox</string>

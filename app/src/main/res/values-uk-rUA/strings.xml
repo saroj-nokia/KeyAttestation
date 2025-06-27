@@ -140,9 +140,9 @@
     <string name="security_level_trusted_environment">Довірене середовище</string>
     <string name="security_level_strongbox">StrongBox</string>
 
-    <string name="sw_enforced" translatable="false">ПЗ</string>
+    <string name="sw_enforced" translatable="false">SW</string>
     <string name="sw_enforced_description"><![CDATA[Цей елемент застосовується системою Android, а не апаратним забезпеченням пристрою.]]></string>
-    <string name="tee_enforced" translatable="false">АП</string>
+    <string name="tee_enforced" translatable="false">HW</string>
     <string name="tee_enforced_description"><![CDATA[Цей елемент застосовується апаратною частиною пристрою.]]></string>
 
     <string name="authorization_list">Список авторизації</string>
