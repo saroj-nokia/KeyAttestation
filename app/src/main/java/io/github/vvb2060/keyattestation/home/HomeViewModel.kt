@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.samsung.android.security.keystore.AttestationUtils
 import io.github.vvb2060.keyattestation.AppApplication
+import io.github.vvb2060.keyattestation.keystore.KeyStoreKeyType
 import io.github.vvb2060.keyattestation.keystore.KeyStoreManager
 import io.github.vvb2060.keyattestation.repository.AttestationRepository
 import io.github.vvb2060.keyattestation.repository.BaseData
@@ -40,7 +41,7 @@ class HomeViewModel(
         }
     }
 
-    private val attestationRepository = AttestationRepository()
+    private val attestationRepository = AttestationRepository(KeyStoreKeyType.ECDSA)
     private val attestationData = MutableLiveData<Resource<BaseData>>()
 
     val hasStrongBox = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
@@ -125,6 +126,12 @@ class HomeViewModel(
             return attestationRepository.canRkp(false)
         }
 
+    var preferAttestRsaKey = sp.getBoolean("prefer_attest_rsa_key", false)
+        set (value){
+            field = value
+            sp.edit { putBoolean("prefer_attest_rsa_key", value) }
+        }
+
     init {
         load()
     }
@@ -187,10 +194,13 @@ class HomeViewModel(
         val useStrongBox = hasStrongBox && preferStrongBox && !useSak
         val includeProps = hasDeviceIds && preferIncludeProps &&
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        val attestKeyStoreKeyType =
+            if (preferAttestRsaKey) { KeyStoreKeyType.RSA }
+            else { KeyStoreKeyType.ECDSA }
 
 
         val result = attestationRepository.attest(reset, useAttestKey, useStrongBox,
-                includeProps, uniqueIdIncluded, idFlags, useSak)
+                includeProps, uniqueIdIncluded, idFlags, attestKeyStoreKeyType, useSak)
 
         attestationData.postValue(result)
     }

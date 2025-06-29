@@ -60,6 +60,8 @@ public class KeyGenParameterSpec_rename {
             return this;
         }
 
+        public Builder setSignaturePaddings(String... paddings) { return this; }
+
         public KeyGenParameterSpec_rename build() {
             throw new RuntimeException("Stub!");
         }
