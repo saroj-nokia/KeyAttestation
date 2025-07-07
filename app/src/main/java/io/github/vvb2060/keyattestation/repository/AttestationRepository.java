@@ -41,8 +41,8 @@ public class AttestationRepository {
     private final List<X509Certificate> currentCerts;
     private IAndroidKeyStore keyStore;
 
-    public AttestationRepository() throws Exception {
-        localKeyStore = new AndroidKeyStore();
+    public AttestationRepository(byte keyStoreKeyType) throws Exception {
+        localKeyStore = new AndroidKeyStore(keyStoreKeyType);
         factory = CertificateFactory.getInstance("X.509");
         currentCerts = new ArrayList<>();
         keyStore = localKeyStore;
@@ -81,9 +81,9 @@ public class AttestationRepository {
     private void generateKeyPair(String alias, String attestKeyAlias,
                                  boolean useStrongBox, boolean includeProps,
                                  boolean uniqueIdIncluded, int idFlags,
-                                 boolean useSak) throws Exception {
+                                 byte keyStoreKeyType, boolean useSak) throws Exception {
         var data = keyStore.generateKeyPair(alias, attestKeyAlias, useStrongBox,
-                includeProps, uniqueIdIncluded, idFlags, useSak);
+                includeProps, uniqueIdIncluded, idFlags, keyStoreKeyType, useSak);
         if (data != null) {
             try (var it = new ObjectInputStream((new ByteArrayInputStream(data)))) {
                 throw (Exception) it.readObject();
@@ -141,7 +141,7 @@ public class AttestationRepository {
 
     private void doAttestation(boolean useAttestKey, boolean useStrongBox,
                                boolean includeProps, boolean uniqueIdIncluded,
-                               int idFlags, boolean useSak) throws AttestationException {
+                               int idFlags, byte keyStoreKeyType, boolean useSak) throws AttestationException {
         var alias = useStrongBox ? AppApplication.TAG + "_strongbox" : AppApplication.TAG;
         var attestKeyAlias = useAttestKey ? alias + "_persistent" : null;
         try {
@@ -152,10 +152,10 @@ public class AttestationRepository {
 
             if (useAttestKey && !keyStore.containsAlias(attestKeyAlias)) {
                 generateKeyPair(attestKeyAlias, attestKeyAlias, useStrongBox,
-                        includeProps, uniqueIdIncluded, idFlags, false);
+                        includeProps, uniqueIdIncluded, idFlags, keyStoreKeyType, false);
             }
             generateKeyPair(alias, attestKeyAlias, useStrongBox,
-                    includeProps, uniqueIdIncluded, idFlags, useSak);
+                    includeProps, uniqueIdIncluded, idFlags, keyStoreKeyType, useSak);
 
             getCertChain(alias);
             if (useAttestKey) {
@@ -184,12 +184,13 @@ public class AttestationRepository {
 
     public Resource<AttestationData> attest(boolean reset, boolean useAttestKey,
                                             boolean useStrongBox, boolean includeProps,
-                                            boolean uniqueIdIncluded, int idFlags, boolean useSak) {
+                                            boolean uniqueIdIncluded, int idFlags,
+                                            byte keyStoreKeyType, boolean useSak) {
         currentCerts.clear();
         try {
             if (reset) keyStore.deleteAllEntry();
             doAttestation(useAttestKey, useStrongBox, includeProps,
-                    uniqueIdIncluded, idFlags, useSak);
+                    uniqueIdIncluded, idFlags, keyStoreKeyType, useSak);
             return Resource.Companion.success(AttestationData.parseCertificateChain(currentCerts));
         } catch (Exception e) {
             var cause = e instanceof AttestationException ? e.getCause() : e;

@@ -355,4 +355,5 @@
     <string name="knox_record_hash_description"><![CDATA[
     a SHA256 digest of the TA requesting the integrity status data from ICCC.
     ]]></string>
+    <string name="attest_rsa_key">Attest RSA key</string>
 </resources>
