@@ -8,6 +8,7 @@
     <string name="use_attest_key">Use attest key</string>
     <string name="import_attest_key">Import attest key</string>
     <string name="attest_device_props">Attest device props</string>
+    <string name="attest_rsa_key">Attest RSA key</string>
     <string name="id_type_serial">Attest device serial</string>
     <string name="id_type_imei">Attest device IMEI</string>
     <string name="id_type_meid">Attest device MEID</string>
@@ -355,5 +356,4 @@
     <string name="knox_record_hash_description"><![CDATA[
     a SHA256 digest of the TA requesting the integrity status data from ICCC.
     ]]></string>
-    <string name="attest_rsa_key">Attest RSA key</string>
 </resources>

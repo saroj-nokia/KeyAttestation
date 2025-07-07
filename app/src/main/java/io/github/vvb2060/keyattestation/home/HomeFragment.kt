@@ -189,6 +189,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
         menu.findItem(R.id.menu_id_type_meid).isChecked = viewModel.preferIdAttestationMEID
         menu.findItem(R.id.menu_include_unique_id).isChecked = viewModel.preferIncludeUniqueId
         menu.findItem(R.id.menu_use_sak).isChecked = viewModel.preferSak
+        menu.findItem(R.id.menu_attest_rsa_key).isChecked = viewModel.preferAttestRsaKey
         if (!viewModel.hasSak) {
             menu.removeItem(R.id.menu_use_sak)
         }
@@ -251,6 +252,11 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
                 viewModel.preferAttestKey = status
                 viewModel.load()
             }
+			
+            R.id.menu_attest_rsa_key -> {
+                viewModel.preferAttestRsaKey = status
+                viewModel.load()
+            }
 
             R.id.menu_include_props -> {
                 viewModel.preferIncludeProps = status
@@ -286,7 +292,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
             }
 
             R.id.menu_save -> {
-                save.launch("${Build.PRODUCT}-${AppApplication.TAG}.p7b")
+                save.launch("${Build.PRODUCT}-${AppApplication.TAG}-${if (viewModel.preferAttestRsaKey) "RSA" else "ECDSA"}.p7b")
             }
 
             R.id.menu_load -> {
