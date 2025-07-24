@@ -8,6 +8,7 @@
     <string name="use_attest_key">Usar chave de atestado</string>
     <string name="import_attest_key">Importar chave de atestado</string>
     <string name="attest_device_props">Atestar props do dispositivo</string>
+    <string name="attest_rsa_key">Atestar chave RSA</string>
     <string name="id_type_serial">Atestar número de série do dispositivo</string>
     <string name="id_type_imei">Atestar IMEI do dispositivo</string>
     <string name="id_type_meid">Atestar MEID do dispositivo</string>

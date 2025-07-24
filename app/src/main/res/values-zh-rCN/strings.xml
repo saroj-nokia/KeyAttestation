@@ -8,6 +8,7 @@
     <string name="use_attest_key">使用认证密钥</string>
     <string name="import_attest_key">导入认证密钥</string>
     <string name="attest_device_props">认证设备型号</string>
+    <string name="attest_rsa_key">认证 RSA 密钥</string>
     <string name="id_type_serial">认证设备序列号</string>
     <string name="id_type_imei">认证设备 IMEI</string>
     <string name="id_type_meid">认证设备 MEID</string>

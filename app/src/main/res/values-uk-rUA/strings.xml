@@ -8,6 +8,7 @@
     <string name="use_attest_key">Використовувати ключ атестації</string>
     <string name="import_attest_key">Імпортувати ключ атестації</string>
     <string name="attest_device_props">Атестувати властивості пристрою</string>
+    <string name="attest_rsa_key">Атестувати ключ RSA</string>
     <string name="id_type_serial">Атестувати серійний номер пристрою</string>
     <string name="id_type_imei">Атестувати IMEI</string>
     <string name="id_type_meid">Атестувати MEID</string>

@@ -8,6 +8,7 @@
     <string name="use_attest_key">Χρήση βεβαίωσης κλειδιού</string>
     <string name="import_attest_key">Εισαγωγή βεβαίωσης κλειδιού</string>
     <string name="attest_device_props">Βεβαίωση ιδιοτήτων συσκευής</string>
+    <string name="attest_rsa_key">Βεβαίωση κλειδιού RSA</string>
     <string name="id_type_serial">Βεβαίωση σειριακού συσκευής</string>
     <string name="id_type_imei">Βεβαίωση IMEI συσκευής</string>
     <string name="id_type_meid">Βεβαίωση MEID συσκευής</string>

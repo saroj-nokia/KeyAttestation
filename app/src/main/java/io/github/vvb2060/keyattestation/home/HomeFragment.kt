@@ -165,6 +165,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
 
         menu.findItem(R.id.menu_use_strongbox)?.isVisible = !viewModel.preferSak
         menu.findItem(R.id.menu_use_attest_key)?.isVisible = !viewModel.preferSak
+        menu.findItem(R.id.menu_attest_rsa_key)?.isVisible = !viewModel.preferSak
         menu.findItem(R.id.menu_import_attest_key)?.isVisible = !viewModel.preferSak
                 && viewModel.preferAttestKey
 

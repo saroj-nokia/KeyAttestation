@@ -8,6 +8,7 @@
     <string name="use_attest_key">使用認證金鑰</string>
     <string name="import_attest_key">匯入認證金鑰</string>
     <string name="attest_device_props">認證裝置型號</string>
+    <string name="attest_rsa_key">認證 RSA 金鑰</string>
     <string name="id_type_serial">認證裝置序號</string>
     <string name="id_type_imei">認證裝置 IMEI</string>
     <string name="id_type_meid">認證裝置 MEID</string>

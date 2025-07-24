@@ -203,7 +203,7 @@ class HomeViewModel(
         val includeProps = hasDeviceIds && preferIncludeProps &&
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
         val attestKeyStoreKeyType =
-            if (preferAttestRsaKey) { KeyStoreKeyType.RSA }
+            if (preferAttestRsaKey && !useSak) { KeyStoreKeyType.RSA }
             else { KeyStoreKeyType.ECDSA }
 
 
