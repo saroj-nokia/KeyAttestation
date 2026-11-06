@@ -232,6 +232,13 @@ class HomeViewModel(
         attestationData.postValue(result)
     }
 
+    // A revocation list update only changes the status shown for certificates we already have, so
+    // re-parse them instead of generating and attesting a new key (slow, and it consumes the limited
+    // pool of remotely provisioned attestation keys). Runs after any attestation already queued.
+    fun refreshRevocation() = AppApplication.executor.execute {
+        attestationRepository.reparse()?.let { attestationData.postValue(it) }
+    }
+
     fun import(uri: Uri?) = AppApplication.executor.execute {
         if (uri == null || !hasAttestKey) return@execute
 

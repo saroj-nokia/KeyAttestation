@@ -16,6 +16,7 @@
 
     <application
         android:name=".AppApplication"
+        android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:hasFragileUserData="true"
         android:icon="@drawable/ic_launcher"

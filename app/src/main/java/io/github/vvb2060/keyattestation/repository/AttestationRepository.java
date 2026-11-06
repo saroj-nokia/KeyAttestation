@@ -206,6 +206,21 @@ public class AttestationRepository {
     }
 
     /**
+     * Re-evaluates the certificates already held (e.g. after a revocation list update) without
+     * generating and attesting a new key. Returns null if there is nothing to re-evaluate, such as
+     * after an RKP check or when the loaded file is not an attestation chain.
+     */
+    public Resource<AttestationData> reparse() {
+        if (currentCerts.isEmpty()) return null;
+        try {
+            return Resource.Companion.success(AttestationData.parseCertificateChain(currentCerts));
+        } catch (Exception e) {
+            Log.w(AppApplication.TAG, "Re-parse certificates error.", e);
+            return null;
+        }
+    }
+
+    /**
      * Load certificates from file, supporting multiple formats (binary, XML, PEM).
 	 * Automatically filters to requested algorithm (RSA or EC).
      */

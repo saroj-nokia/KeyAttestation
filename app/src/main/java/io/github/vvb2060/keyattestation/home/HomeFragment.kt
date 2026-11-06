@@ -104,8 +104,8 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().addMenuProvider(this, viewLifecycleOwner)
 		
-		CrlManager.refreshTrigger.observe(viewLifecycleOwner) {
-            viewModel.load(showLoading = false)
+        CrlManager.refreshTrigger.observe(viewLifecycleOwner) {
+            viewModel.refreshRevocation()
         }
 
         val context = view.context

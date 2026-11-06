@@ -1,7 +1,6 @@
 package io.github.vvb2060.keyattestation.attestation;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -37,6 +36,7 @@ public record RevocationList(String status, String reason, DataSource source) {
     private static final String CACHE_FILE = "revocation_cache.json";
     private static final String PREFS_NAME = "revocation_prefs";
     private static final String KEY_PUBLISH_TIME = "last_publish_time";
+    private static final int MAX_STATUS_BYTES = 8 * 1024 * 1024;
 
     private static volatile JSONObject data = null;
     private static volatile Date publishTime = null;
@@ -54,16 +54,16 @@ public record RevocationList(String status, String reason, DataSource source) {
     private record NetworkResult(JSONObject json, JSONObject entries, int responseCode, long lastModified) {}
 
     private static String toString(InputStream input) throws IOException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String(input.readAllBytes(), StandardCharsets.UTF_8);
-        } else {
-            var output = new ByteArrayOutputStream(8192);
-            var buffer = new byte[8192];
-            for (int length; (length = input.read(buffer)) != -1; ) {
-                output.write(buffer, 0, length);
+        var output = new ByteArrayOutputStream(8192);
+        var buffer = new byte[8192];
+        for (int length; (length = input.read(buffer)) != -1; ) {
+            output.write(buffer, 0, length);
+            // The real list is a few hundred KB; don't let a bad response exhaust memory.
+            if (output.size() > MAX_STATUS_BYTES) {
+                throw new IOException("Revocation list too large");
             }
-            return output.toString();
         }
+        return new String(output.toByteArray(), StandardCharsets.UTF_8);
     }
 
     private static JSONObject parseStatus(InputStream inputStream) throws IOException {
