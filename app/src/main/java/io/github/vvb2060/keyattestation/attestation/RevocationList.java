@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.github.vvb2060.keyattestation.AppApplication;
 import io.github.vvb2060.keyattestation.R;
@@ -34,19 +32,18 @@ public record RevocationList(String status, String reason, DataSource source) {
         CACHE,
         BUNDLED
     }
-    
+
     private static final String TAG = "RevocationList";
     private static final String CACHE_FILE = "revocation_cache.json";
     private static final String PREFS_NAME = "revocation_prefs";
     private static final String KEY_PUBLISH_TIME = "last_publish_time";
-    
+
     private static volatile JSONObject data = null;
     private static volatile Date publishTime = null;
     private static volatile DataSource currentSource = DataSource.BUNDLED;
-    private static volatile Future<NetworkResult> pendingFetch;
 
+    // Single thread: syncs run one after another, and the 10s/20s socket timeouts bound each one.
     private static final ExecutorService asyncExecutor = Executors.newSingleThreadExecutor();
-    private static final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public interface OnUpdateListener {
@@ -54,7 +51,7 @@ public record RevocationList(String status, String reason, DataSource source) {
     }
 
     private record StatusResult(JSONObject json, DataSource source) {}
-    private record NetworkResult(JSONObject json, int responseCode) {}
+    private record NetworkResult(JSONObject json, JSONObject entries, int responseCode, long lastModified) {}
 
     private static String toString(InputStream input) throws IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -77,7 +74,7 @@ public record RevocationList(String status, String reason, DataSource source) {
         }
     }
 
-    private static void saveToCache(JSONObject fullJson) {
+    private static void saveToCache(JSONObject fullJson, long lastModified) {
         try (var output = AppApplication.app.openFileOutput(CACHE_FILE, Context.MODE_PRIVATE)) {
             String pretty;
             try {
@@ -86,9 +83,12 @@ public record RevocationList(String status, String reason, DataSource source) {
                 pretty = fullJson.toString();
             }
             output.write(pretty.getBytes(StandardCharsets.UTF_8));
-            if (publishTime != null) {
-                var prefs = AppApplication.app.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                prefs.edit().putLong(KEY_PUBLISH_TIME, publishTime.getTime()).apply();
+            var prefs = AppApplication.app.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            if (lastModified != 0) {
+                prefs.edit().putLong(KEY_PUBLISH_TIME, lastModified).apply();
+            } else {
+                // Don't keep a stale If-Modified-Since for data that has no Last-Modified.
+                prefs.edit().remove(KEY_PUBLISH_TIME).apply();
             }
             Log.i(TAG, "Local cache file written successfully.");
         } catch (IOException e) {
@@ -99,70 +99,51 @@ public record RevocationList(String status, String reason, DataSource source) {
     private static NetworkResult fetchFromNetwork(String statusUrl, long cachedTime) {
         HttpURLConnection connection = null;
         try {
-            URL url = new URL(statusUrl);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) new URL(statusUrl).openConnection();
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(10_000);
             connection.setReadTimeout(20_000);
             connection.setRequestProperty("User-Agent", "KeyAttestation");
-            
-            double rand = Math.round(Math.random() * 1000.0) / 1000.0;
             connection.setRequestProperty("Cache-Control", "no-cache, no-store, no-transform, max-age=0");
-            connection.setRequestProperty("Accept", "application/json, */*;q=" + rand);
-            connection.setRequestProperty("Accept-Encoding", "identity, *;q=" + rand);
-            connection.setRequestProperty("Accept-Ranges", "bytes");
-            
+            connection.setRequestProperty("Accept", "application/json");
+
             if (cachedTime != 0) {
                 connection.setIfModifiedSince(cachedTime);
             }
-            
+
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
-                return new NetworkResult(null, responseCode);
+                return new NetworkResult(null, null, responseCode, 0);
             }
-            
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                long lastModified = connection.getLastModified();
-                if (lastModified != 0) {
-                    publishTime = new Date(lastModified);
-                }
                 try (var input = connection.getInputStream()) {
-                    return new NetworkResult(parseStatus(input), responseCode);
+                    var json = parseStatus(input);
+                    // Validate before anything is cached: a bad body must not replace good data.
+                    var entries = json.getJSONObject("entries");
+                    return new NetworkResult(json, entries, responseCode, connection.getLastModified());
                 }
             }
+            Log.w(TAG, "Unexpected response code " + responseCode);
             return null;
         } catch (Exception e) {
+            Log.w(TAG, "Network fetch failed", e);
             return null;
         } finally {
             if (connection != null) connection.disconnect();
         }
     }
 
-    private static NetworkResult fetchNetworkWithTimeout(String url, long cachedTime) {
-        var future = pendingFetch;
-        if (future == null || future.isDone()) {
-            future = networkExecutor.submit(() -> fetchFromNetwork(url, cachedTime));
-            pendingFetch = future;
-        } else {
-            Log.i(TAG, "Network fetch already in progress; reusing it instead of queuing another.");
-        }
-        try {
-            return future.get(3, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            Log.w(TAG, "Network fetch dropped gracefully (Hard 3-second DNS/Connection Timeout)");
-            return null;
-        }
-    }
-
     private static StatusResult loadLocalData() {
         var prefs = AppApplication.app.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         long cachedTime = prefs.getLong(KEY_PUBLISH_TIME, 0);
-        
+
         try (var fis = AppApplication.app.openFileInput(CACHE_FILE)) {
             var cacheJson = parseStatus(fis);
-            if (cachedTime != 0) publishTime = new Date(cachedTime);
+            var entries = cacheJson.getJSONObject("entries");
+            publishTime = cachedTime != 0 ? new Date(cachedTime) : null;
             Log.i(TAG, "Successfully matched database schemas inside local CACHE storage.");
-            return new StatusResult(cacheJson.getJSONObject("entries"), DataSource.CACHE);
+            return new StatusResult(entries, DataSource.CACHE);
         } catch (Exception e) {
             Log.i(TAG, "Local file cache missing, loading baseline fallback asset.");
         }
@@ -170,7 +151,7 @@ public record RevocationList(String status, String reason, DataSource source) {
         var res = AppApplication.app.getResources();
         try (var input = res.openRawResource(R.raw.status)) {
             var bundledJson = parseStatus(input);
-            publishTime = null; 
+            publishTime = null;
             return new StatusResult(bundledJson.getJSONObject("entries"), DataSource.BUNDLED);
         } catch (Exception e) {
             throw new RuntimeException("Critical: Baseline resource asset file missing from app payload", e);
@@ -185,7 +166,7 @@ public record RevocationList(String status, String reason, DataSource source) {
             var id = res.getIdentifier(resName, null, null);
             if (id != 0) {
                 var url = res.getString(id);
-                if (!statusUrl.equals(url) && url.toLowerCase(Locale.ROOT).startsWith("https")) {
+                if (!statusUrl.equals(url) && url.toLowerCase(Locale.ROOT).startsWith("https://")) {
                     statusUrl = url;
                 }
             }
@@ -194,64 +175,59 @@ public record RevocationList(String status, String reason, DataSource source) {
             long cachedTime = prefs.getLong(KEY_PUBLISH_TIME, 0);
 
             Log.i(TAG, "Starting background network sync operation...");
-            NetworkResult networkResult = fetchNetworkWithTimeout(statusUrl, cachedTime);
-            DataSource finalSource = null;
-            JSONObject finalEntries = null;
+            var network = fetchFromNetwork(statusUrl, cachedTime);
+            DataSource newSource = null;
+            JSONObject newEntries = null;
+            Date newPublishTime = null;
 
-            if (networkResult != null && networkResult.responseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
+            if (network != null && network.responseCode() == HttpURLConnection.HTTP_NOT_MODIFIED) {
                 Log.i(TAG, "Network connection reporting 304 Not Modified. Local data streams up to date.");
                 try (var fis = AppApplication.app.openFileInput(CACHE_FILE)) {
-                    var cacheJson = parseStatus(fis);
-                    publishTime = new Date(cachedTime);
-                    finalEntries = cacheJson.getJSONObject("entries");
-                    finalSource = DataSource.NETWORK_UP_TO_DATE;
+                    newEntries = parseStatus(fis).getJSONObject("entries");
+                    newPublishTime = new Date(cachedTime);
+                    newSource = DataSource.NETWORK_UP_TO_DATE;
                 } catch (Exception e) {
-                    Log.w(TAG, "Legacy cache format error. Resetting storage contexts.", e);
+                    Log.w(TAG, "Cache unreadable despite 304. Resetting and downloading again.", e);
                     AppApplication.app.deleteFile(CACHE_FILE);
                     prefs.edit().remove(KEY_PUBLISH_TIME).apply();
-                    
-                    NetworkResult retryResult = fetchNetworkWithTimeout(statusUrl, 0);
-                    if (retryResult != null && retryResult.json() != null) {
-                        saveToCache(retryResult.json());
-                        try {
-                            finalEntries = retryResult.json().getJSONObject("entries");
-                            finalSource = DataSource.NETWORK_UPDATE;
-                        } catch (JSONException ignored) {}
-                    }
+                    cachedTime = 0;
+                    network = fetchFromNetwork(statusUrl, 0);
                 }
-            } else if (networkResult != null && networkResult.json() != null) {
+            }
+
+            if (newSource == null && network != null && network.json() != null) {
                 Log.i(TAG, "Network fetch SUCCESS! Downloaded updated production data components.");
-                saveToCache(networkResult.json());
+                saveToCache(network.json(), network.lastModified());
+                newEntries = network.entries();
+                newPublishTime = network.lastModified() != 0 ? new Date(network.lastModified()) : null;
+                newSource = (cachedTime == 0) ? DataSource.NETWORK_INITIAL : DataSource.NETWORK_UPDATE;
+            }
+
+            if (newSource == null) {
+                Log.i(TAG, "Sync complete. Network failed; falling back to offline data.");
                 try {
-                    finalEntries = networkResult.json().getJSONObject("entries");
-                    finalSource = (cachedTime == 0) ? DataSource.NETWORK_INITIAL : DataSource.NETWORK_UPDATE;
-                } catch (JSONException ignored) {}
-            } else {
-                // CHANGE THIS: Force parsing the local cache when connection errors drop out
-                Log.i(TAG, "Sync complete. Network timed out or dropped; falling back to offline cache.");
-                try {
-                    StatusResult localResult = loadLocalData();
-                    finalEntries = localResult.json();
-                    finalSource = localResult.source(); // Becomes DataSource.CACHE
+                    var local = loadLocalData();
+                    newEntries = local.json();
+                    newSource = local.source();
+                    newPublishTime = publishTime; // set by loadLocalData
                 } catch (Exception e) {
                     Log.w(TAG, "Failed to load local data fallback during offline transition", e);
                 }
             }
-			
-            if (finalEntries != null && finalSource != null) {
-                final DataSource sourceToApply = finalSource;
-                final JSONObject entriesToApply = finalEntries;
-                
+
+            if (newEntries != null && newSource != null) {
+                final DataSource sourceToApply = newSource;
                 synchronized (RevocationList.class) {
-                    data = entriesToApply;
+                    data = newEntries;
                     currentSource = sourceToApply;
+                    publishTime = newPublishTime;
                 }
 
                 if (listener != null) {
                     mainHandler.post(() -> listener.onUpdateSuccess(sourceToApply));
                 }
             } else {
-                Log.i(TAG, "Sync complete. Network timed out or dropped; local data streams unchanged.");
+                Log.i(TAG, "Sync complete. Local data streams unchanged.");
             }
         });
     }
@@ -267,12 +243,12 @@ public record RevocationList(String status, String reason, DataSource source) {
     public static DataSource getCurrentSource() {
         return currentSource;
     }
-	
-	public static boolean hasCachedCrl() {
+
+    public static boolean hasCachedCrl() {
         return AppApplication.app.getFileStreamPath(CACHE_FILE).exists();
     }
-	
-	public static String suggestedExportFileName() {
+
+    public static String suggestedExportFileName() {
         var fmt = new java.text.SimpleDateFormat("yyyyMMdd-hhmma", Locale.US);
         fmt.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         if (publishTime != null) {
@@ -282,8 +258,8 @@ public record RevocationList(String status, String reason, DataSource source) {
     }
 
     /**
-     * Writes the currently cached CRL (as originally downloaded from Google, re-serialized) to the given stream. 
-	 * Callers should check hasCachedCrl() first; a false return here
+     * Writes the currently cached CRL (as originally downloaded from Google, re-serialized) to the given stream.
+     * Callers should check hasCachedCrl() first; a false return here
      * means the write itself failed (e.g. the cache was deleted between the check and this call), not that no cache exists.
      */
     public static boolean exportCachedCrl(java.io.OutputStream out) {

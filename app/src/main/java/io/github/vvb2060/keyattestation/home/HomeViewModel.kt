@@ -21,6 +21,7 @@ import com.samsung.android.security.keystore.AttestationUtils
 import io.github.vvb2060.keyattestation.AppApplication
 import io.github.vvb2060.keyattestation.keystore.KeyStoreKeyType
 import io.github.vvb2060.keyattestation.keystore.KeyStoreManager
+import io.github.vvb2060.keyattestation.lang.AttestationException
 import io.github.vvb2060.keyattestation.repository.AttestationRepository
 import io.github.vvb2060.keyattestation.repository.BaseData
 import io.github.vvb2060.keyattestation.util.Resource
@@ -150,15 +151,15 @@ class HomeViewModel(
         if (uri == null || !attestationRepository.hasCertificates()) return@execute
 
         var name = uri.toString()
-        val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
-        cr.query(uri, projection, null, null, null)?.use { cursor ->
-            val displayNameColumn = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
-            if (cursor.moveToFirst()) {
-                name = cursor.getString(displayNameColumn)
-            }
-        }
-
         try {
+            val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
+            cr.query(uri, projection, null, null, null)?.use { cursor ->
+                val displayNameColumn = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (displayNameColumn >= 0 && cursor.moveToFirst()) {
+                    name = cursor.getString(displayNameColumn) ?: name
+                }
+            }
+
             cr.openOutputStream(uri).use {
                 attestationRepository.saveCerts(it)
             }
@@ -174,8 +175,13 @@ class HomeViewModel(
 
         attestationData.postValue(Resource.loading(null))
 
-        val result = cr.openFileDescriptor(uri, "r").use {
-            attestationRepository.loadCerts(it, preferAttestRsaKey)
+        val result: Resource<BaseData> = try {
+            cr.openFileDescriptor(uri, "r").use {
+                attestationRepository.loadCerts(it, preferAttestRsaKey)
+            }
+        } catch (e: Exception) {
+            Log.e(AppApplication.TAG, "load: ", e)
+            Resource.error(AttestationException(AttestationException.CODE_INVALID_FILE, e), null)
         }
 
         attestationData.postValue(result)
@@ -188,6 +194,12 @@ class HomeViewModel(
         if (showLoading) {
             attestationData.postValue(Resource.loading(null))
         }
+
+        // Shizuku may have died or reconnected; fall back to local / pick up the new binder.
+        if (preferShizuku && KeyStoreManager.getRemoteKeyStore() == null) {
+            preferShizuku = false
+        }
+        attestationRepository.useRemoteKeyStore(preferShizuku)
 
         var uniqueIdIncluded = false
         var useSak = false

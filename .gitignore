@@ -7,5 +7,6 @@
 /captures
 .externalNativeBuild
 .cxx
-/*.jks
+*.jks
+*.keystore
 /.kotlin/sessions/kotlin-compiler-*.salive

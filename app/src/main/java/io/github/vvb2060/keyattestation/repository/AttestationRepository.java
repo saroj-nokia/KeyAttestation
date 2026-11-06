@@ -27,6 +27,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.github.vvb2060.keyattestation.AppApplication;
 import io.github.vvb2060.keyattestation.keystore.AndroidKeyStore;
@@ -37,6 +38,8 @@ import io.github.vvb2060.keyattestation.lang.AttestationException;
 import io.github.vvb2060.keyattestation.util.Resource;
 
 public class AttestationRepository {
+    private static final int MAX_FILE_BYTES = 1024 * 1024;
+
     private final AndroidKeyStore localKeyStore;
     private final CertificateFactory factory;
     private final List<X509Certificate> currentCerts;
@@ -45,16 +48,13 @@ public class AttestationRepository {
     public AttestationRepository() throws Exception {
         localKeyStore = new AndroidKeyStore();
         factory = CertificateFactory.getInstance("X.509");
-        currentCerts = new ArrayList<>();
+        currentCerts = new CopyOnWriteArrayList<>(); // read on the UI thread, written on the executor
         keyStore = localKeyStore;
     }
 
     public void useRemoteKeyStore(boolean useRemote) {
-        if (useRemote) {
-            keyStore = KeyStoreManager.getRemoteKeyStore();
-        } else {
-            keyStore = localKeyStore;
-        }
+        var remote = useRemote ? KeyStoreManager.getRemoteKeyStore() : null;
+        keyStore = remote != null ? remote : localKeyStore;
     }
 
     public boolean hasCertificates() {
@@ -220,6 +220,10 @@ public class AttestationRepository {
                 int read;
                 while ((read = in.read(buffer)) != -1) {
                     baos.write(buffer, 0, read);
+                    // Cert chains and keyboxes are KBs; refuse anything absurd instead of risking OOM.
+                    if (baos.size() > MAX_FILE_BYTES) {
+                        throw new AttestationException(CODE_INVALID_FILE, null);
+                    }
                 }
                 bytes = baos.toByteArray();
             }

@@ -18,8 +18,10 @@ object CrlManager {
     private val _refreshTrigger = MutableLiveData<Unit>()
     val refreshTrigger: LiveData<Unit> = _refreshTrigger
     
-    // Prevent redundant consecutive triggers causing a double load
-    private var lastObservedSource: RevocationList.DataSource? = null
+    // Prevent redundant consecutive triggers causing a double load. Keyed on source + publish time
+    // so two different downloads in a row still refresh the UI. Written from the UI and executor threads.
+    @Volatile
+    private var lastObserved: Pair<RevocationList.DataSource, Long?>? = null
 
     fun install(application: Application) {
         val connectivityManager = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -49,13 +51,14 @@ object CrlManager {
     private fun sync() {
         // Leverages the internal background worker of RevocationList
         RevocationList.refreshAsync { source ->
-            // If the incoming network source status matches what we already checked, skip it
-            if (source == lastObservedSource) {
+            // If the incoming state matches what we already checked, skip it
+            val observed = source to RevocationList.getPublishTime()?.time
+            if (observed == lastObserved) {
                 Log.i("CrlManager", "Data state unchanged ($source). Skipping duplicate notification.")
                 return@refreshAsync
             }
 
-            lastObservedSource = source
+            lastObserved = observed
             Log.i("CrlManager", "Sync complete ($source). Notifying UI...")
             mainHandler.post {
                 _refreshTrigger.value = Unit
@@ -63,7 +66,7 @@ object CrlManager {
         }
     }
     fun forceSync() {
-        lastObservedSource = null
+        lastObserved = null
         sync()
     }
 }

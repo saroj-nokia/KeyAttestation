@@ -1,5 +1,5 @@
 import com.android.build.api.instrumentation.*
-import com.android.build.gradle.internal.tasks.CompileArtProfileTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.commons.ClassRemapper
@@ -28,9 +28,20 @@ if (local.exists()) {
 def localesFile = file("locales.txt")
 def supportedLocales = localesFile.readLines().findAll { it && !it.startsWith("#") }
 
+// Release signing comes from env vars (CI) or local.properties. Without a complete set,
+// the release build falls back to the debug key so assembleRelease still works locally.
+def releaseStoreFile = System.getenv("STORE_FILE") ?: properties.getProperty("storeFile")
+def releaseStorePassword = System.getenv("STORE_PASSWORD") ?: properties.getProperty("storePassword")
+def releaseKeyAlias = System.getenv("KEY_ALIAS") ?: properties.getProperty("keyAlias")
+def releaseKeyPassword = System.getenv("KEY_PASSWORD") ?: properties.getProperty("keyPassword")
+def hasReleaseSigning = releaseStoreFile && file(releaseStoreFile).exists() &&
+        releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+if (!hasReleaseSigning) {
+    logger.warn("Release signing not configured; release APK will be signed with the debug key.")
+}
+
 android {
-    compileSdk = 35
-    buildToolsVersion = '35.0.1'
+    compileSdk = 36
     namespace = 'io.github.vvb2060.keyattestation'
     defaultConfig {
         minSdk = 24
@@ -55,11 +66,12 @@ android {
             }
         }
         release {
-            def sFile = System.getenv("STORE_FILE") ?: properties.getProperty("storeFile") ?: "Vision.jks"
-            storeFile file(sFile)
-            storePassword System.getenv("STORE_PASSWORD") ?: properties.getProperty("storePassword")
-            keyAlias System.getenv("KEY_ALIAS") ?: properties.getProperty("keyAlias")
-            keyPassword System.getenv("KEY_PASSWORD") ?: properties.getProperty("keyPassword")
+            if (hasReleaseSigning) {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
         }
     }
     buildTypes {
@@ -70,7 +82,7 @@ android {
             minifyEnabled true
             shrinkResources true
             vcsInfo.include false
-            signingConfig signingConfigs.release
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
             proguardFiles 'proguard-rules.pro'
         }
     }
@@ -79,19 +91,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-        options.languageVersion = KotlinVersion.KOTLIN_2_1
-        options.progressiveMode = true
-    }
-
     buildFeatures {
         viewBinding = true
         buildConfig = true
         aidl = true
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += '**'
         }
@@ -109,7 +115,16 @@ android {
     dependenciesInfo.includeInApk false
 }
 
-tasks.withType(CompileArtProfileTask.class).configureEach {
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        progressiveMode.set(true)
+    }
+}
+
+// Matched by name (not the internal AGP task class) so AGP upgrades can't break the script.
+tasks.matching { it.name.startsWith("compile") && it.name.endsWith("ArtProfile") }.configureEach {
     enabled = false
 }
 

@@ -152,11 +152,14 @@ public class AndroidKeyStore extends IAndroidKeyStore.Stub {
 
     @Override
     public void deleteAllEntry() {
+        // Only this app's keys: the service may run as shell/system, where aliases() lists others' keys too.
         try {
-            var aliases = keyStore.aliases();
-            while (aliases.hasMoreElements()) {
-                var alias = aliases.nextElement();
-                keyStore.deleteEntry(alias);
+            for (var base : new String[]{AppApplication.TAG, AppApplication.TAG + "_strongbox"}) {
+                for (var alias : new String[]{base, base + "_persistent"}) {
+                    if (keyStore.containsAlias(alias)) {
+                        keyStore.deleteEntry(alias);
+                    }
+                }
             }
         } catch (KeyStoreException e) {
             Log.e(AppApplication.TAG, "deleteAllEntry", e);

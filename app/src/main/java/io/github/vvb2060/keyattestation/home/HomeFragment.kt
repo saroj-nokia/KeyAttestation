@@ -384,7 +384,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
             }
 
             R.id.menu_import_attest_key -> {
-                import.launch("text/xml")
+                import.launch("*/*") // file managers report keyboxes as text/xml or application/xml
             }
 
             R.id.menu_about -> {

@@ -32,13 +32,9 @@ public class KeyBoxXmlParser {
     private final List<Certificate> chain;
     private PrivateKey privateKey;
 
-    private static KeyBoxXmlParser instance;
-
+    // New instance per call: the parser is stateful (not thread-safe) and holds the private key.
     public static KeyBoxXmlParser getInstance() throws IOException {
-        if (instance == null) {
-            instance = new KeyBoxXmlParser();
-        }
-        return instance;
+        return new KeyBoxXmlParser();
     }
 
     private KeyBoxXmlParser() throws IOException {
@@ -105,8 +101,7 @@ public class KeyBoxXmlParser {
             switch (parser.getName()) {
                 case "PrivateKey" -> {
                     if ("pem".equals(format)) {
-                        parser.next();
-                        readPrivateKey(parser.getText(), algorithm);
+                        readPrivateKey(readText(), algorithm);
                         parser.next();
                     } else {
                         return;
@@ -114,8 +109,7 @@ public class KeyBoxXmlParser {
                 }
                 case "Certificate" -> {
                     if ("pem".equals(format)) {
-                        parser.next();
-                        readCertificateChain(parser.getText());
+                        readCertificateChain(readText());
                         parser.next();
                     } else {
                         return;
@@ -124,6 +118,15 @@ public class KeyBoxXmlParser {
                 default -> parser.next();
             }
         }
+    }
+
+    private String readText() throws XmlPullParserException, IOException {
+        parser.next();
+        var text = parser.getText(); // null for an empty element
+        if (text == null) {
+            throw new IOException("Empty PEM element");
+        }
+        return text;
     }
 
     private static byte[] stringToBytes(String text) {

@@ -4,8 +4,7 @@ plugins {
 
 android {
     namespace = "stub"
-    buildToolsVersion = '35.0.1'
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
