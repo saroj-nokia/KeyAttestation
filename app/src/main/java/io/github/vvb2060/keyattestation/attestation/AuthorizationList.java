@@ -562,7 +562,7 @@ public class AuthorizationList {
             case KM_ALGORITHM_RSA -> KeyProperties.KEY_ALGORITHM_RSA;
             case KM_ALGORITHM_EC -> KeyProperties.KEY_ALGORITHM_EC;
             case KM_ALGORITHM_AES -> KeyProperties.KEY_ALGORITHM_AES;
-            case KM_ALGORITHM_3DES -> KeyProperties.KEY_ALGORITHM_3DES;
+            case KM_ALGORITHM_3DES -> "DESede"; // KeyProperties.KEY_ALGORITHM_3DES is deprecated; same string
             case KM_ALGORITHM_HMAC -> "HMAC";
             default -> "Unknown (" + algorithm + ")";
         };

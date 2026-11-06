@@ -62,12 +62,20 @@ public class AndroidKeyStore extends IAndroidKeyStore.Stub {
         keyPairGenerators.put(KeyStoreKeyType.RSA, KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore"));
     }
 
+    // Os.seteuid is deprecated because ordinary apps lack the privilege to call it. This path runs only
+    // when we are already root (root/Sui service) and the SDK offers no replacement, so the warning is
+    // suppressed for this single call rather than for the whole class.
+    @SuppressWarnings("deprecation")
+    private static void switchToSystemUid() throws Exception {
+        Os.seteuid(Process.SYSTEM_UID);
+    }
+
     private static void fixEnv() throws Exception {
         var packageName = "com.android.shell";
         switch (Os.geteuid()) {
             case Process.ROOT_UID:
                 if (Os.gettid() == Os.getpid()) {
-                    Os.seteuid(Process.SYSTEM_UID);
+                    switchToSystemUid();
                 } else {
                     throw new RuntimeException("tid!=pid");
                 }

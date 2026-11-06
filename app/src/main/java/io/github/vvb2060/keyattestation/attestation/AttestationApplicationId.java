@@ -14,20 +14,12 @@
 
 package io.github.vvb2060.keyattestation.attestation;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
-
 import com.google.common.io.BaseEncoding;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,35 +31,6 @@ public class AttestationApplicationId implements java.lang.Comparable<Attestatio
 
     private final List<AttestationPackageInfo> packageInfos;
     private final List<byte[]> signatureDigests;
-
-    public AttestationApplicationId(Context context)
-            throws NoSuchAlgorithmException, NameNotFoundException {
-        PackageManager pm = context.getPackageManager();
-        int uid = context.getApplicationInfo().uid;
-        String[] packageNames = pm.getPackagesForUid(uid);
-        if (packageNames == null || packageNames.length == 0) {
-            throw new NameNotFoundException("No names found for uid");
-        }
-        packageInfos = new ArrayList<AttestationPackageInfo>();
-        for (String packageName : packageNames) {
-            // get the package info for the given package name including
-            // the signatures
-            PackageInfo packageInfo = pm.getPackageInfo(packageName, 0);
-            packageInfos.add(new AttestationPackageInfo(packageName, packageInfo.versionCode));
-        }
-        // The infos must be sorted, the implementation of Comparable relies on it.
-        packageInfos.sort(null);
-
-        // compute the sha256 digests of the signature blobs
-        signatureDigests = new ArrayList<byte[]>();
-        PackageInfo packageInfo = pm.getPackageInfo(packageNames[0], PackageManager.GET_SIGNATURES);
-        for (Signature signature : packageInfo.signatures) {
-            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-            signatureDigests.add(sha256.digest(signature.toByteArray()));
-        }
-        // The digests must be sorted. the implementation of Comparable relies on it
-        signatureDigests.sort(new ByteArrayComparator());
-    }
 
     public AttestationApplicationId(ASN1Encodable asn1Encodable)
             throws CertificateParsingException {
