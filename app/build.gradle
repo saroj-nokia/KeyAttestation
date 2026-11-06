@@ -1,6 +1,5 @@
 import com.android.build.api.instrumentation.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.Remapper
@@ -118,9 +117,13 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_21)
-        languageVersion.set(KotlinVersion.KOTLIN_2_1)
-        progressiveMode.set(true)
+        progressiveMode.set(true) // only valid on the latest language version, so don't pin languageVersion
     }
+}
+
+// Show which Java call sites use deprecated APIs (the default build prints only a one-line note).
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:deprecation"
 }
 
 // Matched by name (not the internal AGP task class) so AGP upgrades can't break the script.

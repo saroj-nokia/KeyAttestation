@@ -16,26 +16,25 @@ import java.util.Locale
 object LocaleManager {
 
     private val supportedLocales = listOf(
-        Locale("el"),       // Greek
-        Locale("en"),       // English
-        Locale("fr"),       // French
-        Locale("it"),       // Italian
-        Locale("iw"),       // Hebrew
-        Locale("pt", "BR"), // Portuguese (Brazil)
-        Locale("uk", "UA"), // Ukrainian
-        Locale("zh", "CN"), // Chinese (Simplified)
-        Locale("zh", "TW")  // Chinese (Traditional)
+        "el",    // Greek
+        "en",    // English
+        "fr",    // French
+        "it",    // Italian
+        "iw",    // Hebrew (legacy code, matches the values-iw resource folder)
+        "pt-BR", // Portuguese (Brazil)
+        "uk-UA", // Ukrainian
+        "zh-CN", // Chinese (Simplified)
+        "zh-TW"  // Chinese (Traditional)
     )
 
-    fun getLocaleCodes() = listOf("") + supportedLocales.map {
-        if (it.country.isEmpty()) it.language else "${it.language}-${it.country}"
-    }
+    fun getLocaleCodes() = listOf("") + supportedLocales
 
     fun getLocaleDisplayNames(context: Context): List<String> {
         val sys = Resources.getSystem().configuration.locales[0]
         val app = AppCompatDelegate.getApplicationLocales()[0] ?: sys
-        return listOf(sys.getDisplayName(sys)) + supportedLocales.map { it.getDisplayName(app) }
-            .map { it.replaceFirstChar { c -> c.uppercaseChar() } }
+        return listOf(sys.getDisplayName(sys)) +
+            supportedLocales.map { Locale.forLanguageTag(it).getDisplayName(app) }
+                .map { it.replaceFirstChar { c -> c.uppercaseChar() } }
     }
 
     fun updateLocale(context: Context, code: String): String {

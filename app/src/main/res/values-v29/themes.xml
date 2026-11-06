@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Transparent navigation bar; with contrast enforcement the system draws a scrim only
+         behind 3-button navigation and leaves gesture navigation fully transparent. -->
+    <style name="Theme" parent="Theme.App.Base">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
+    </style>
+</resources>

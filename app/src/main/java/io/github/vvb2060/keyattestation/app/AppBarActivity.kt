@@ -1,6 +1,5 @@
 package io.github.vvb2060.keyattestation.app
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -54,11 +53,6 @@ abstract class AppBarActivity : AppActivity() {
 
     override fun shouldApplyTranslucentSystemBars(): Boolean {
         return true
-    }
-
-    override fun onApplyTranslucentSystemBars() {
-        super.onApplyTranslucentSystemBars()
-        window?.statusBarColor = Color.TRANSPARENT
     }
 }
 

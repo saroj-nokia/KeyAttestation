@@ -11,6 +11,8 @@ import android.text.method.LinkMovementMethod
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.BundleCompat
+import androidx.core.os.ParcelCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 
@@ -38,7 +40,7 @@ open class AlertDialogFragment : DialogFragment() {
     open fun onBuildAlertDialog(builder: AlertDialog.Builder, savedInstanceState: Bundle?) {
         val args = requireArguments()
         if (args.containsKey(INTERNAL_BUILDER_ARGS)) {
-            val dialogBuilder: Builder = args.getParcelable(INTERNAL_BUILDER_ARGS)!!
+            val dialogBuilder = BundleCompat.getParcelable(args, INTERNAL_BUILDER_ARGS, Builder::class.java)!!
             builder.setTitle(dialogBuilder.title)
             builder.setMessage(dialogBuilder.message)
             if (dialogBuilder.positiveButtonText != null) {
@@ -105,10 +107,13 @@ open class AlertDialogFragment : DialogFragment() {
             positiveButtonText = `in`.readString()
             negativeButtonText = `in`.readString()
             neutralButtonText = `in`.readString()
-            positiveButtonIntent = `in`.readParcelable(Intent::class.java.classLoader)
-            negativeButtonIntent = `in`.readParcelable(Intent::class.java.classLoader)
-            neutralButtonIntent = `in`.readParcelable(Intent::class.java.classLoader)
+            positiveButtonIntent = readIntent(`in`)
+            negativeButtonIntent = readIntent(`in`)
+            neutralButtonIntent = readIntent(`in`)
         }
+
+        private fun readIntent(parcel: Parcel): Intent? =
+            ParcelCompat.readParcelable(parcel, Intent::class.java.classLoader, Intent::class.java)
 
         fun title(title: CharSequence?) = apply { this.title = title }
 

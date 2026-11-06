@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base theme -->
-    <style name="Theme" parent="Theme.Material">
-        <item name="android:statusBarColor">?toolbarColor</item>
+    <!-- Base theme. Use "Theme" below: values-v29 overrides it to add the navigation bar settings. -->
+    <style name="Theme" parent="Theme.App.Base" />
+
+    <style name="Theme.App.Base" parent="Theme.Material">
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:colorPrimary">?toolbarColor</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.ActionBar.PopupTheme</item>
