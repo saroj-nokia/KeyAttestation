@@ -38,8 +38,18 @@ jobs:
           STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      - name: Upload APKs
+      - name: List built APKs
+        run: find app/build/outputs -name '*.apk' -exec ls -l {} +
+      - name: Upload debug APK
         uses: actions/upload-artifact@v6
         with:
-          name: apk
-          path: app/build/outputs/apk/**/*.apk
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+      - name: Upload release APK
+        if: env.HAS_KEYSTORE == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
