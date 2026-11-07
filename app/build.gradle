@@ -38,7 +38,7 @@ if (!hasReleaseSigning) {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
     namespace = 'io.github.vvb2060.keyattestation'
     defaultConfig {
         minSdk = 24
