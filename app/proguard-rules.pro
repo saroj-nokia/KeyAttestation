@@ -26,3 +26,7 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
 -keep class rikka.shizuku.** { *; }
+
+# Behaviors are named by string in layouts (layout_behavior), so R8 can't see the reference.
+-keep class com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior { <init>(...); }
+-keep class * extends androidx.coordinatorlayout.widget.CoordinatorLayout$Behavior { <init>(...); }
