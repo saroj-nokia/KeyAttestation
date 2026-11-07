@@ -19,5 +19,5 @@ dependencies {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.release = 27
+    options.release = 24
 }
