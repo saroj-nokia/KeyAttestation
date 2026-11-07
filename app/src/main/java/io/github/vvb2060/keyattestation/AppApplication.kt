@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.arch.core.executor.ArchTaskExecutor
+import com.google.android.material.color.DynamicColors
 import io.github.vvb2060.keyattestation.keystore.KeyStoreManager
 import io.github.vvb2060.keyattestation.util.CrlManager
 import io.github.vvb2060.keyattestation.util.LocaleManager
@@ -37,6 +38,7 @@ class AppApplication : Application() {
         app = this
         DayNightDelegate.setApplicationContext(this)
         DayNightDelegate.setDefaultNightMode(DayNightDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        DynamicColors.applyToActivitiesIfAvailable(this)
         HtmlCompat.setContext(this)
         installProvider(this)
 

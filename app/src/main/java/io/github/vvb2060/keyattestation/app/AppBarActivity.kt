@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.github.vvb2060.keyattestation.R
-import io.github.vvb2060.keyattestation.util.ColorManager
-import rikka.material.widget.AppBarLayout
 
 abstract class AppBarActivity : AppActivity() {
 
@@ -20,17 +20,22 @@ abstract class AppBarActivity : AppActivity() {
         findViewById<AppBarLayout>(R.id.toolbar_container)
     }
 
+    protected val collapsingToolbar: CollapsingToolbarLayout by lazy {
+        findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
+    }
+
     private val toolbar: Toolbar by lazy {
         findViewById<Toolbar>(R.id.toolbar)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(ColorManager.getThemeResId(this))
-	
         super.onCreate(savedInstanceState)
         super.setContentView(getLayoutId())
 
-        setAppBar(toolbarContainer, toolbar)
+        setSupportActionBar(toolbar)
+        // The large collapsing bar draws the title itself.
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        collapsingToolbar.title = title
     }
 
     @LayoutRes

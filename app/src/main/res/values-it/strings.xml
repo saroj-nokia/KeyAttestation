@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="menu_language">Lingua</string>
-    <string name="menu_color">Colore</string>
     <string name="secret_mode">Modalità Segreta</string>
     <string name="use_shizuku">Usa Shizuku</string>
     <string name="use_sak">Usa attestazione Knox</string>

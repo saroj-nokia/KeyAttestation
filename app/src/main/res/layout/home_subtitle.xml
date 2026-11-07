@@ -7,6 +7,6 @@
     android:layout_height="wrap_content"
     android:background="?android:selectableItemBackground"
     android:gravity="bottom"
-    android:textAppearance="?textAppearanceSubtitle2"
-    android:textColor="?colorAccent"
+    android:textAppearance="?attr/textAppearanceLabelLarge"
+    android:textColor="?attr/colorPrimary"
     tools:text="@string/app_name" />

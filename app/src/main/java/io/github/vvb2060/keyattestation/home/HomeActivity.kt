@@ -9,7 +9,7 @@ import io.github.vvb2060.keyattestation.app.AppBarFragmentActivity
 class HomeActivity : AppBarFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.subtitle = BuildConfig.VERSION_NAME
+        collapsingToolbar.subtitle = BuildConfig.VERSION_NAME
 
         if (savedInstanceState == null) {
             supportFragmentManager.commit {

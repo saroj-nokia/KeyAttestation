@@ -2,19 +2,25 @@ package io.github.vvb2060.keyattestation.home
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
+import android.graphics.RectF
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import rikka.core.res.resolveDrawable
+import com.google.android.material.color.MaterialColors
 import kotlin.math.roundToInt
 
 class HomeItemDecoration(context: Context) : ItemDecoration() {
 
-    private val drawable: Drawable = context.theme.resolveDrawable(rikka.material.R.attr.outlineButtonBackground)!!
+    // Grouped items sit on one tonal, rounded surface.
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceContainer, 0)
+    }
+    private val radius = context.resources.displayMetrics.density * 28
+    private val rect = RectF()
     private val cardMargin: Int = (context.resources.displayMetrics.density * 8).roundToInt()
-    private val cardPadding: Int = (context.resources.displayMetrics.density * 8).roundToInt()
+    private val cardPadding: Int = (context.resources.displayMetrics.density * 12).roundToInt()
 
     private fun hasTopMargin(@Suppress("UNUSED_PARAMETER") adapter: HomeAdapter, position: Int): Boolean {
         return position == 0
@@ -54,7 +60,7 @@ class HomeItemDecoration(context: Context) : ItemDecoration() {
         outRect.right = cardMargin
     }
 
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         if (parent.childCount == 0) {
             return
         }
@@ -83,8 +89,8 @@ class HomeItemDecoration(context: Context) : ItemDecoration() {
             if ((i == parent.childCount - 1) || adapter.shouldCommitFrameAt(position)) {
                 bottom = child.bottom
 
-                drawable.setBounds(left, top - cardPadding, right, bottom + cardPadding)
-                drawable.draw(c)
+                rect.set(left.toFloat(), (top - cardPadding).toFloat(), right.toFloat(), (bottom + cardPadding).toFloat())
+                c.drawRoundRect(rect, radius, radius, paint)
 
                 invalidatedPosition = true
             } else {

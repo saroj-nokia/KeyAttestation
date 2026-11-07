@@ -10,27 +10,23 @@
     android:paddingEnd="@dimen/home_padding"
     android:animateLayoutChanges="true">
 
-    <rikka.widget.borderview.BorderRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingTop="?actionBarSize"
+        android:paddingBottom="16dp"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical"
         android:visibility="gone"
-        app:borderBottomVisibility="never"
-        app:borderTopDrawable="@null"
-        app:borderTopVisibility="whenTop"
-        app:fitsSystemWindowsInsets="top|bottom"
         tools:listitem="@layout/home_header"
         tools:visibility="visible" />
 
-    <ProgressBar
+    <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/progress"
+        style="@style/Widget.Material3.LoadingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:layout_fitsSystemWindowsInsets="top|bottom" />
+        android:layout_gravity="center" />
 
 </FrameLayout>

@@ -3,7 +3,6 @@ package io.github.vvb2060.keyattestation.home
 import android.view.View
 import androidx.core.view.isVisible
 import io.github.vvb2060.keyattestation.databinding.HomeHeaderBinding
-import rikka.core.res.resolveColorStateList
 
 class HeaderViewHolder(itemView: View, binding: HomeHeaderBinding) : HomeViewHolder<HeaderData, HomeHeaderBinding>(itemView, binding) {
 
@@ -18,7 +17,7 @@ class HeaderViewHolder(itemView: View, binding: HomeHeaderBinding) : HomeViewHol
     override fun onBind() {
         binding.apply {
             val context = root.context
-            root.backgroundTintList = context.theme.resolveColorStateList(data.color)
+            applyStatus(data.color)
             icon.setImageDrawable(context.getDrawable(data.icon))
             title.setText(data.title)
             if (data.description != 0) {

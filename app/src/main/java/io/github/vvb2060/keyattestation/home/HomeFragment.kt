@@ -18,7 +18,10 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.MenuProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.vvb2060.keyattestation.AppApplication
@@ -32,14 +35,12 @@ import io.github.vvb2060.keyattestation.databinding.HomeBinding
 import io.github.vvb2060.keyattestation.keystore.KeyStoreManager
 import io.github.vvb2060.keyattestation.lang.AttestationException
 import io.github.vvb2060.keyattestation.repository.AttestationData
-import io.github.vvb2060.keyattestation.util.ColorManager
 import io.github.vvb2060.keyattestation.util.CrlManager
 import io.github.vvb2060.keyattestation.util.LocaleManager
 import io.github.vvb2060.keyattestation.util.Status
 import rikka.html.text.HtmlCompat
 import rikka.html.text.toHtml
 import rikka.shizuku.Shizuku
-import rikka.widget.borderview.BorderView
 import java.io.IOException
 
 class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
@@ -110,10 +111,13 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
 
         val context = view.context
 
-        binding.list.borderVisibilityChangedListener =
-            BorderView.OnBorderVisibilityChangedListener { top: Boolean, _: Boolean, _: Boolean, _: Boolean ->
-                appActivity?.appBar?.setRaised(!top)
-            }
+        // The app bar (status bar) is handled by AppBarLayout; the list only needs the bottom inset.
+        val listBottom = binding.list.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.list) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            v.updatePadding(bottom = listBottom + bars.bottom)
+            insets
+        }
         binding.list.layoutManager = LinearLayoutManager(context)
         binding.list.adapter = adapter
         binding.list.addItemDecoration(HomeItemDecoration(context))
@@ -307,10 +311,6 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
                 return true
             }
 			
-            R.id.menu_color -> {
-                ColorManager.showColorPickerDialog(requireActivity())
-                return true
-            }
 		
             R.id.menu_secret_mode -> {
                 viewModel.secretMode = status

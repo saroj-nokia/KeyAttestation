@@ -6,21 +6,22 @@
     android:backgroundTintMode="src_in"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    tools:backgroundTint="?colorAlert">
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    tools:backgroundTint="?attr/colorErrorContainer">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:importantForAccessibility="no"
-        android:tint="?android:textColorPrimaryInverse"
         android:tintMode="src_in"
         tools:src="@drawable/ic_error_outline_24" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="20dp"
         android:orientation="vertical">
 
         <TextView
@@ -28,9 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textAppearance="?textAppearanceSubtitle2"
-            android:textColor="?android:textColorPrimaryInverse"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             tools:text="@string/error_strongbox_unavailable" />
 
         <TextView
@@ -38,9 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textAppearance="?textAppearanceBody2"
-            android:textColor="?android:textColorPrimaryInverse"
-            android:textSize="14sp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             tools:text="@string/error_strongbox_unavailable_summary" />
 
     </LinearLayout>

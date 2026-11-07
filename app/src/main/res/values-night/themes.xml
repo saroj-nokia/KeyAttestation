@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.Base" parent="Theme.Material3Expressive.Dark.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <item name="colorSafe">?attr/colorPrimary</item>
+        <item name="colorWarning">?attr/colorTertiary</item>
+        <item name="colorAlert">?attr/colorError</item>
+        <item name="colorInactive">?attr/colorOutline</item>
+    </style>
+</resources>

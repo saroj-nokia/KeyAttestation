@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="menu_language">שפה</string>
-    <string name="menu_color">צבע</string>
     <string name="secret_mode">מצב סודי</string>
     <string name="use_shizuku">השתמש ב-Shizuku</string>
     <string name="use_sak">השתמש באימות Knox</string>

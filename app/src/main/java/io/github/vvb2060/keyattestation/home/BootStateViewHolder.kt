@@ -1,13 +1,11 @@
 package io.github.vvb2060.keyattestation.home
 
-import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.view.isVisible
 import io.github.vvb2060.keyattestation.R
 import io.github.vvb2060.keyattestation.attestation.RootOfTrust
 import io.github.vvb2060.keyattestation.databinding.HomeHeaderBinding
 import io.github.vvb2060.keyattestation.repository.AttestationData
-import rikka.core.res.resolveColor
 
 class BootStateViewHolder(itemView: View, binding: HomeHeaderBinding) :
         HomeViewHolder<AttestationData, HomeHeaderBinding>(itemView, binding) {
@@ -56,12 +54,10 @@ class BootStateViewHolder(itemView: View, binding: HomeHeaderBinding) :
             summaryRes = 0
         }
 
-        val color = context.theme.resolveColor(colorAttrRes)
-
         binding.apply {
             title.setText(titleRes)
             icon.setImageDrawable(context.getDrawable(iconRes))
-            root.backgroundTintList = ColorStateList.valueOf(color)
+            applyStatus(colorAttrRes)
             if (summaryRes == 0) {
                 summary.isVisible = false
             } else {

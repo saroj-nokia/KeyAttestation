@@ -40,7 +40,7 @@
         android:padding="4dp"
         android:tintMode="src_in"
         tools:src="@drawable/ic_trustworthy_24"
-        tools:tint="?colorSafe" />
+        tools:tint="?attr/colorPrimary" />
 
     <TextView
         android:id="@+id/text1"
@@ -50,8 +50,8 @@
         android:fontFamily="sans-serif"
         android:letterSpacing="0"
         android:minWidth="0dp"
-        android:textColor="?colorAccent"
-        android:textStyle="bold"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary"
         tools:text="SW" />
 
 </LinearLayout>
