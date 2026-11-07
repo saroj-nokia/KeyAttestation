@@ -25,6 +25,9 @@ jobs:
           java-version: '27'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+      - name: Debug stub variants
+        continue-on-error: true
+        run: ./gradlew :stub:outgoingVariants --no-configuration-cache
       - name: Build debug
         run: ./gradlew assembleDebug
       - name: Decode keystore
