@@ -239,7 +239,7 @@ open class CommonItemViewHolder<T>(itemView: View, binding: HomeCommonItemBindin
                             isVisible = true
                             isClickable = true
                             iconRes = R.drawable.ic_info_outline_24
-                            colorAttr = com.google.android.material.R.attr.colorPrimary
+                            colorAttr = androidx.appcompat.R.attr.colorPrimary
                         } else {
                             isVisible = false
                             isClickable = false
