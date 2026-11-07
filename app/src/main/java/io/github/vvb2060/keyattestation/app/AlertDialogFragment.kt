@@ -1,5 +1,6 @@
 package io.github.vvb2060.keyattestation.app
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -24,7 +25,7 @@ open class AlertDialogFragment : DialogFragment() {
     }
 
     open fun onCreateAlertDialogBuilder(context: Context): AlertDialog.Builder {
-        return AlertDialog.Builder(context)
+        return MaterialAlertDialogBuilder(context)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

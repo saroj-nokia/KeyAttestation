@@ -1,5 +1,6 @@
 package io.github.vvb2060.keyattestation.util
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -58,7 +59,7 @@ object LocaleManager {
         val languages = getLocaleDisplayNames(context)
         val currentIndex = languageCodes.indexOf(loadLocale(context)).coerceAtLeast(0)
 
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setTitle(R.string.menu_language)
             .setSingleChoiceItems(languages.toTypedArray(), currentIndex) { dialog, which ->
                 updateLocale(context, languageCodes[which])

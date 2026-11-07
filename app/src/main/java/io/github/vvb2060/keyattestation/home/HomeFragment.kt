@@ -1,5 +1,6 @@
 package io.github.vvb2060.keyattestation.home
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
@@ -160,7 +161,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
         editText.setPadding(dp24, dp18, dp24, dp18)
         editText.requestFocus()
 
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setView(editText)
             .setTitle(R.string.rkp_hostname)
             .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -174,7 +175,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
         val context = requireActivity()
 
         if (data.title == R.string.revocation_list_publish_time) {
-            AlertDialog.Builder(context)
+            MaterialAlertDialogBuilder(context)
                 .setTitle(data.title)
                 .setMessage(data.getMessage(context))
                 .setNeutralButton(R.string.revocation_list_save) { _, _ ->
@@ -190,7 +191,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
         }
 		
 		if (data is AuthorizationItemData && data.data.contains("verifiedBootHash:")) {
-            val dialog = AlertDialog.Builder(context)
+            val dialog = MaterialAlertDialogBuilder(context)
                 .setTitle(data.title)
                 .setMessage(data.getMessage(context))
                 .setNeutralButton(R.string.copy_verifiedBootHash) { _, _ ->
@@ -419,7 +420,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
         }
         text.append("<p>").append(context.getString(R.string.copyright))
         val icon = context.getDrawable(R.drawable.ic_launcher)
-        val dialog: Dialog = AlertDialog.Builder(context)
+        val dialog: Dialog = MaterialAlertDialogBuilder(context)
             .setView(rikka.material.R.layout.dialog_about)
             .show()
         dialog.findViewById<TextView>(rikka.material.R.id.design_about_info).isVisible = false
