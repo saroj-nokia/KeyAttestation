@@ -27,7 +27,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
       - name: Debug stub variants
         continue-on-error: true
-        run: ./gradlew :stub:outgoingVariants --no-configuration-cache
+        run: |
+          ./gradlew :stub:tasks --all --no-configuration-cache | grep -i 'debug\|release\|assemble' | head -40
+          ./gradlew :stub:properties --no-configuration-cache | grep -i 'plugin\|variant\|extensions' | head
       - name: Build debug
         run: ./gradlew assembleDebug
       - name: Decode keystore
