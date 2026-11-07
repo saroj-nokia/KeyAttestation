@@ -1,0 +1,23 @@
+// Hidden-API stubs, compiled only against the public SDK; the app uses them as compileOnly.
+// A plain Java library: AGP 9 created no variants for this module as an Android library.
+plugins {
+    id 'java-library'
+}
+
+def local = new Properties()
+def localFile = rootProject.file("local.properties")
+if (localFile.exists()) {
+    localFile.withInputStream { local.load(it) }
+}
+def sdkDir = local.getProperty("sdk.dir") ?: System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+if (!sdkDir) {
+    throw new GradleException("Android SDK not found: set sdk.dir in local.properties or ANDROID_HOME")
+}
+
+dependencies {
+    compileOnly files("$sdkDir/platforms/android-36/android.jar")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+}
